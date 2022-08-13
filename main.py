@@ -1,5 +1,4 @@
 from pprint import pprint
-from collections import Counter
 
 
 def get_cook_book():
@@ -32,20 +31,22 @@ def get_cook_book():
 
 pprint(get_cook_book())
 
+
 def get_shop_list_by_dishes(dishes, person_count):
     shop_list = {}
-    dish_count = Counter(dishes)
-    for name, count in dish_count.items():
-        if name not in get_cook_book().keys():
-            print(f'Блюда {name} нет в поваренной книге')
+    for dish in dishes:
+        if dish not in get_cook_book().keys():
+            print(f'Блюда {dish} отсутствует в поваренной книге.')
         else:
-            for i, v in get_cook_book().items():
-                for k in v:
-                    if i == name:
-                        shop_list[k['ingredient_name']] = {
-                            'measure': k['measure'],
-                            'quantity': int(k['quantity']) * person_count * count}
+            for name in get_cook_book()[dish]:
+                if name['ingredient_name'] not in shop_list:
+                    shop_list[name['ingredient_name']] = {
+                        'measure': name['measure'],
+                        'quantity': int(name['quantity']) * person_count}
+                elif name['ingredient_name'] in shop_list:
+                    shop_list[name['ingredient_name']]['quantity'] += int(name['quantity']) * person_count
+
     return shop_list
 
 
-pprint(get_shop_list_by_dishes(['Омлет', 'Пицца'], 3))
+pprint(get_shop_list_by_dishes(['Омлет', 'Омлет', 'Пицца', 'Пицца'], 4))
